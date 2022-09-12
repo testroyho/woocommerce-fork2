@@ -173,6 +173,10 @@ class OrdersTableDataStore extends \Abstract_WC_Order_Data_Store_CPT implements 
 			'type' => 'string',
 			'name' => 'customer_user_agent',
 		),
+		'customer_note'        => array(
+			'type' => 'string',
+			'name' => 'customer_note',
+		),
 	);
 
 	/**
@@ -1031,8 +1035,6 @@ LEFT JOIN {$operational_data_clauses['join']}
 	 * @since 6.8.0
 	 */
 	protected function persist_order_to_db( &$order ) {
-		global $wpdb;
-
 		$context   = ( 0 === absint( $order->get_id() ) ) ? 'create' : 'update';
 		$data_sync = wc_get_container()->get( DataSynchronizer::class );
 
@@ -1061,9 +1063,11 @@ LEFT JOIN {$operational_data_clauses['join']}
 			ksort( $update['data'] );
 			ksort( $update['format'] );
 
-			$result = empty( $update['where'] )
-					? $wpdb->insert( $update['table'], $update['data'], array_values( $update['format'] ) )
-					: $wpdb->update( $update['table'], $update['data'], $update['where'], array_values( $update['format'] ), $update['where_format'] );
+			$result = $this->database_util->insert_on_duplicate_key_update(
+				$update['table'],
+				$update['data'],
+				array_values( $update['format'] )
+			);
 
 			if ( false === $result ) {
 				// translators: %s is a table name.
@@ -1091,8 +1095,6 @@ LEFT JOIN {$operational_data_clauses['join']}
 	protected function get_db_rows_for_order( $order, $context = 'create', $only_changes = false ): array {
 		$result = array();
 
-		$existing_order_row = $order->get_id() ? $this->get_order_data_for_id( $order->get_id() ) : array();
-
 		$row = $this->get_db_row_from_order( $order, $this->order_column_mapping, $only_changes );
 		if ( 'create' === $context && ! $row ) {
 			throw new \Exception( 'No data for new record.' ); // This shouldn't occur.
@@ -1100,11 +1102,9 @@ LEFT JOIN {$operational_data_clauses['join']}
 
 		if ( $row ) {
 			$result[] = array(
-				'table'        => self::get_orders_table_name(),
-				'data'         => array_merge( $row['data'], array( 'id' => $order->get_id() ) ),
-				'format'       => array_merge( $row['format'], array( 'id' => '%d' ) ),
-				'where'        => 'update' === $context ? array( 'id' => $order->get_id() ) : null,
-				'where_format' => 'update' === $context ? '%d' : null,
+				'table'  => self::get_orders_table_name(),
+				'data'   => array_merge( $row['data'], array( 'id' => $order->get_id() ) ),
+				'format' => array_merge( $row['format'], array( 'id' => '%d' ) ),
 			);
 		}
 
@@ -1112,11 +1112,9 @@ LEFT JOIN {$operational_data_clauses['join']}
 		$row = $this->get_db_row_from_order( $order, $this->operational_data_column_mapping, $only_changes );
 		if ( $row ) {
 			$result[] = array(
-				'table'        => self::get_operational_data_table_name(),
-				'data'         => array_merge( $row['data'], array( 'order_id' => $order->get_id() ) ),
-				'format'       => array_merge( $row['format'], array( 'order_id' => '%d' ) ),
-				'where'        => isset( $existing_order_row->{"{$this->get_op_table_alias()}_id"} ) ? array( 'order_id' => $order->get_id() ) : null,
-				'where_format' => isset( $existing_order_row->{"{$this->get_op_table_alias()}_id"} ) ? '%d' : null,
+				'table'  => self::get_operational_data_table_name(),
+				'data'   => array_merge( $row['data'], array( 'order_id' => $order->get_id() ) ),
+				'format' => array_merge( $row['format'], array( 'order_id' => '%d' ) ),
 			);
 		}
 
@@ -1126,28 +1124,21 @@ LEFT JOIN {$operational_data_clauses['join']}
 
 			if ( $row ) {
 				$result[] = array(
-					'table'        => self::get_addresses_table_name(),
-					'data'         => array_merge(
+					'table'  => self::get_addresses_table_name(),
+					'data'   => array_merge(
 						$row['data'],
 						array(
 							'order_id'     => $order->get_id(),
 							'address_type' => $address_type,
 						)
 					),
-					'format'       => array_merge(
+					'format' => array_merge(
 						$row['format'],
 						array(
 							'order_id'     => '%d',
 							'address_type' => '%s',
 						)
 					),
-					'where'        => isset( $existing_order_row->{ $this->get_address_table_alias( $address_type ) . '_id' } )
-									? array(
-										'order_id'     => $order->get_id(),
-										'address_type' => $address_type,
-									)
-									: null,
-					'where_format' => isset( $existing_order_row->{ $this->get_address_table_alias( $address_type ) . '_id' } ) ? array( '%d', '%s' ) : null,
 				);
 			}
 		}
@@ -1695,7 +1686,7 @@ LEFT JOIN {$operational_data_clauses['join']}
 
 		$sql = "
 CREATE TABLE $orders_table_name (
-	id bigint(20) unsigned auto_increment,
+	id bigint(20) unsigned,
 	status varchar(20) null,
 	currency varchar(10) null,
 	type varchar(20) null,
@@ -1711,10 +1702,15 @@ CREATE TABLE $orders_table_name (
 	transaction_id varchar(100) null,
 	ip_address varchar(100) null,
 	user_agent text null,
+	customer_note text null,
 	PRIMARY KEY (id),
 	KEY status (status),
 	KEY date_created (date_created_gmt),
-	KEY customer_id_billing_email (customer_id, billing_email)
+	KEY customer_id_billing_email (customer_id, billing_email),
+	KEY billing_email (billing_email),
+	KEY type_status (type, status),
+	KEY parent_order_id (parent_order_id),
+	KEY date_updated (date_updated_gmt)
 ) $collate;
 CREATE TABLE $addresses_table_name (
 	id bigint(20) unsigned auto_increment primary key,
@@ -1732,7 +1728,9 @@ CREATE TABLE $addresses_table_name (
 	email varchar(320) null,
 	phone varchar(100) null,
 	KEY order_id (order_id),
-	UNIQUE KEY address_type_order_id (address_type, order_id)
+	UNIQUE KEY address_type_order_id (address_type, order_id),
+	KEY email (email),
+	KEY phone (phone)
 ) $collate;
 CREATE TABLE $operational_data_table_name (
 	id bigint(20) unsigned auto_increment primary key,
@@ -1761,7 +1759,8 @@ CREATE TABLE $meta_table (
 	order_id bigint(20) unsigned null,
 	meta_key varchar(255),
 	meta_value text null,
-	KEY meta_key_value (meta_key, meta_value(100))
+	KEY meta_key_value (meta_key, meta_value(100)),
+	KEY order_id_meta_key_meta_value (order_id, meta_key, meta_value(100))
 ) $collate;
 ";
 
