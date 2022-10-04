@@ -2,11 +2,16 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Link, useFormContext } from '@woocommerce/components';
+import {
+	DateTimePickerControl,
+	Link,
+	useFormContext,
+} from '@woocommerce/components';
 import { Product, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useContext } from '@wordpress/element';
+import { useContext, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
+import moment from 'moment';
 import interpolateComponents from '@automattic/interpolate-components';
 import {
 	// @ts-expect-error `__experimentalInputControl` does exist.
@@ -14,6 +19,7 @@ import {
 	BaseControl,
 	Card,
 	CardBody,
+	ToggleControl,
 } from '@wordpress/components';
 
 /**
@@ -21,14 +27,18 @@ import {
  */
 import './pricing-section.scss';
 import { ProductSectionLayout } from '../layout/product-section-layout';
-import { getInputControlProps } from './utils';
+import {
+	getDateTimePickerControlProps as getProductDateTimePickerControlProps,
+	getInputControlProps,
+} from './utils';
 import { ADMIN_URL } from '../../utils/admin-settings';
 import { CurrencyContext } from '../../lib/currency-context';
 import { useProductHelper } from '../use-product-helper';
 
 export const PricingSection: React.FC = () => {
-	const { getInputProps } = useFormContext< Product >();
 	const { sanitizePrice } = useProductHelper();
+	const { getInputProps, setValues, values } = useFormContext< Product >();
+	const [ showSaleSchedule, setShowSaleSchedule ] = useState( false );
 	const { isResolving: isTaxSettingsResolving, taxSettings } = useSelect(
 		( select ) => {
 			const { getSettings, hasFinishedResolution } =
@@ -53,6 +63,22 @@ export const PricingSection: React.FC = () => {
 		'Per your {{link}}store settings{{/link}}, tax is {{strong}}not included{{/strong}} in the price.',
 		'woocommerce'
 	);
+
+	const setHasSaleSchedule = ( value: boolean ) => {
+		setShowSaleSchedule( value );
+
+		if ( value ) {
+			setValues( {
+				date_on_sale_from: moment().add( 1, 'hours' ).toISOString(),
+				date_on_sale_to: null,
+			} as Product );
+		} else {
+			setValues( {
+				date_on_sale_from: null,
+				date_on_sale_to: null,
+			} as Product );
+		}
+	};
 
 	const taxSettingsElement = interpolateComponents( {
 		mixedString: pricesIncludeTax
@@ -162,6 +188,38 @@ export const PricingSection: React.FC = () => {
 							} }
 						/>
 					</BaseControl>
+
+					<ToggleControl
+						label={ __( 'Schedule sale', 'woocommerce' ) }
+						checked={ showSaleSchedule }
+						onChange={ setHasSaleSchedule }
+					/>
+
+					{ showSaleSchedule && (
+						<>
+							<DateTimePickerControl
+								label={ __( 'From', 'woocommerce' ) }
+								placeholder={ __(
+									'Sale start date and time',
+									'woocommerce'
+								) }
+								{ ...getProductDateTimePickerControlProps( {
+									...getInputProps( 'date_on_sale_from' ),
+								} ) }
+							/>
+
+							<DateTimePickerControl
+								label={ __( 'To', 'woocommerce' ) }
+								placeholder={ __(
+									'Sale end date and time',
+									'woocommerce'
+								) }
+								{ ...getProductDateTimePickerControlProps( {
+									...getInputProps( 'date_on_sale_to' ),
+								} ) }
+							/>
+						</>
+					) }
 				</CardBody>
 			</Card>
 		</ProductSectionLayout>
