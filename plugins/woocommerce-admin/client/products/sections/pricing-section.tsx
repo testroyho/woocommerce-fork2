@@ -9,7 +9,7 @@ import {
 } from '@woocommerce/components';
 import { Product, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useContext, useState } from '@wordpress/element';
+import { useContext, useEffect, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import moment from 'moment';
 import interpolateComponents from '@automattic/interpolate-components';
@@ -39,6 +39,10 @@ export const PricingSection: React.FC = () => {
 	const { sanitizePrice } = useProductHelper();
 	const { getInputProps, setValues, values } = useFormContext< Product >();
 	const [ showSaleSchedule, setShowSaleSchedule ] = useState( false );
+	const [ userToggledSaleSchedule, setUserToggledSaleSchedule ] =
+		useState( false );
+	const [ autoToggledSaleSchedule, setAutoToggledSaleSchedule ] =
+		useState( false );
 	const { isResolving: isTaxSettingsResolving, taxSettings } = useSelect(
 		( select ) => {
 			const { getSettings, hasFinishedResolution } =
@@ -64,7 +68,8 @@ export const PricingSection: React.FC = () => {
 		'woocommerce'
 	);
 
-	const setHasSaleSchedule = ( value: boolean ) => {
+	const onSaleScheduleToggleChange = ( value: boolean ) => {
+		setUserToggledSaleSchedule( true );
 		setShowSaleSchedule( value );
 
 		if ( value ) {
@@ -79,6 +84,26 @@ export const PricingSection: React.FC = () => {
 			} as Product );
 		}
 	};
+
+	useEffect( () => {
+		if ( userToggledSaleSchedule || autoToggledSaleSchedule ) {
+			return;
+		}
+
+		const hasDateOnSaleFrom =
+			typeof values.date_on_sale_from === 'string' &&
+			values.date_on_sale_from.length > 0;
+		const hasDateOnSaleTo =
+			typeof values.date_on_sale_to === 'string' &&
+			values.date_on_sale_to.length > 0;
+
+		const hasSaleSchedule = hasDateOnSaleFrom || hasDateOnSaleTo;
+
+		if ( hasSaleSchedule ) {
+			setAutoToggledSaleSchedule( true );
+			setShowSaleSchedule( true );
+		}
+	}, [ userToggledSaleSchedule, autoToggledSaleSchedule, values ] );
 
 	const taxSettingsElement = interpolateComponents( {
 		mixedString: pricesIncludeTax
@@ -192,7 +217,14 @@ export const PricingSection: React.FC = () => {
 					<ToggleControl
 						label={ __( 'Schedule sale', 'woocommerce' ) }
 						checked={ showSaleSchedule }
-						onChange={ setHasSaleSchedule }
+						onChange={ onSaleScheduleToggleChange }
+						// @ts-ignore disabled prop exists
+						disabled={
+							! (
+								values.sale_price &&
+								values.sale_price.length > 0
+							)
+						}
 					/>
 
 					{ showSaleSchedule && (
