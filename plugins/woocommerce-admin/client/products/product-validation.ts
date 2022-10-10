@@ -60,39 +60,39 @@ export const validate = (
 	}
 
 	const dateOnSaleFrom = moment(
-		values.date_on_sale_from,
+		values.date_on_sale_from_gmt,
 		moment.ISO_8601,
 		true
 	);
 	const dateOnSaleTo = moment(
-		values.date_on_sale_to,
+		values.date_on_sale_to_gmt,
 		moment.ISO_8601,
 		true
 	);
 
-	if ( values.date_on_sale_from && ! dateOnSaleFrom.isValid() ) {
-		errors.date_on_sale_from = __(
+	if ( values.date_on_sale_from_gmt && ! dateOnSaleFrom.isValid() ) {
+		errors.date_on_sale_from_gmt = __(
 			'Please enter a valid date.',
 			'woocommerce'
 		);
 	}
 
-	if ( values.date_on_sale_to && ! dateOnSaleTo.isValid() ) {
-		errors.date_on_sale_to = __(
+	if ( values.date_on_sale_to_gmt && ! dateOnSaleTo.isValid() ) {
+		errors.date_on_sale_to_gmt = __(
 			'Please enter a valid date.',
 			'woocommerce'
 		);
 	}
 
 	if ( dateOnSaleFrom.isAfter( dateOnSaleTo ) ) {
-		errors.date_on_sale_from = __(
+		errors.date_on_sale_from_gmt = __(
 			'The start date of the sale must be before the end date.',
 			'woocommerce'
 		);
 	}
 
 	if ( dateOnSaleTo.isBefore( dateOnSaleFrom ) ) {
-		errors.date_on_sale_to = __(
+		errors.date_on_sale_to_gmt = __(
 			'The end date of the sale must be after the start date.',
 			'woocommerce'
 		);

@@ -110,20 +110,17 @@ export const getInputControlProps = ( {
 };
 
 export const getDateTimePickerControlProps = ( {
-	currentDate,
 	className,
 	onChange,
 	onBlur,
 	help,
 }: {
-	currentDate?: string | null;
 	className?: string;
 	onChange: ( date: string ) => void;
 	onBlur: () => void;
 	help?: string | null;
 } ) => {
 	return {
-		currentDate,
 		className: classnames(
 			'woocommerce-product__date-time-picker',
 			className

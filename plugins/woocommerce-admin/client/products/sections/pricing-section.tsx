@@ -74,13 +74,13 @@ export const PricingSection: React.FC = () => {
 
 		if ( value ) {
 			setValues( {
-				date_on_sale_from: moment().add( 1, 'hours' ).toISOString(),
-				date_on_sale_to: null,
+				date_on_sale_from_gmt: moment().add( 1, 'hours' ).toISOString(),
+				date_on_sale_to_gmt: null,
 			} as Product );
 		} else {
 			setValues( {
-				date_on_sale_from: null,
-				date_on_sale_to: null,
+				date_on_sale_from_gmt: null,
+				date_on_sale_to_gmt: null,
 			} as Product );
 		}
 	};
@@ -91,11 +91,11 @@ export const PricingSection: React.FC = () => {
 		}
 
 		const hasDateOnSaleFrom =
-			typeof values.date_on_sale_from === 'string' &&
-			values.date_on_sale_from.length > 0;
+			typeof values.date_on_sale_from_gmt === 'string' &&
+			values.date_on_sale_from_gmt.length > 0;
 		const hasDateOnSaleTo =
-			typeof values.date_on_sale_to === 'string' &&
-			values.date_on_sale_to.length > 0;
+			typeof values.date_on_sale_to_gmt === 'string' &&
+			values.date_on_sale_to_gmt.length > 0;
 
 		const hasSaleSchedule = hasDateOnSaleFrom || hasDateOnSaleTo;
 
@@ -235,8 +235,9 @@ export const PricingSection: React.FC = () => {
 									'Sale start date and time',
 									'woocommerce'
 								) }
+								currentDate={ values.date_on_sale_from_gmt }
 								{ ...getProductDateTimePickerControlProps( {
-									...getInputProps( 'date_on_sale_from' ),
+									...getInputProps( 'date_on_sale_from_gmt' ),
 								} ) }
 							/>
 
@@ -246,8 +247,9 @@ export const PricingSection: React.FC = () => {
 									'Sale end date and time',
 									'woocommerce'
 								) }
+								currentDate={ values.date_on_sale_to_gmt }
 								{ ...getProductDateTimePickerControlProps( {
-									...getInputProps( 'date_on_sale_to' ),
+									...getInputProps( 'date_on_sale_to_gmt' ),
 								} ) }
 							/>
 						</>
