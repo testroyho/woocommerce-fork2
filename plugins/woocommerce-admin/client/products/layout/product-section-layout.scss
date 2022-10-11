@@ -14,8 +14,9 @@
 		}
 
 		.components-base-control,
+		.components-dropdown,
 		.woocommerce-rich-text-editor {
-			&:not(:first-child) {
+			&:not( :first-child ) {
 				margin-top: $gap-large - $gap-smaller;
 				margin-bottom: 0;
 			}
@@ -29,7 +30,7 @@
 		}
 	}
 
-	&:not(:first-child) {
+	&:not( :first-child ) {
 		margin-top: $gap-largest;
 	}
 }
