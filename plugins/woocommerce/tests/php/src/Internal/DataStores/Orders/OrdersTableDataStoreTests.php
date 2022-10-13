@@ -1,6 +1,7 @@
 <?php
 
 use Automattic\WooCommerce\Database\Migrations\CustomOrderTable\PostsToOrdersMigrationController;
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableQuery;
@@ -321,6 +322,35 @@ class OrdersTableDataStoreTests extends WC_Unit_Test_Case {
 
 		$this->assertEquals( $order->get_meta( 'my_meta', true, 'edit' ), $r_order->get_meta( 'my_meta', true, 'edit' ) );
 		$this->assertEquals( $this->sut->get_stock_reduced( $order ), $this->sut->get_stock_reduced( $r_order ) );
+	}
+
+	/**
+	 * Confirm we store the order creation date in GMT.
+	 */
+	public function test_order_dates_are_gmt(): void {
+		global $wpdb;
+
+		// Switch to the COT datastore, set WordPress to use a non-UTC timezone, and create a new order.
+		update_option( CustomOrdersTableController::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION, 'yes' );
+		update_option( 'timezone_string', 'America/Los_Angeles' );
+
+		$order            = OrderHelper::create_order();
+		$date_created_gmt = $wpdb->get_var(
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			'SELECT date_created_gmt FROM ' . OrdersTableDataStore::get_orders_table_name() . ' WHERE id = ' . $order->get_id()
+		);
+
+		$this->assertNotEquals(
+			$date_created_gmt,
+			$order->get_date_created()->format( 'Y-m-d H:i:s' ),
+			'The creation date in the database should be in GMT, but the retrieved datetime should be in the local WP timezone.'
+		);
+
+		$this->assertEquals(
+			$date_created_gmt,
+			$order->get_date_created()->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ),
+			'The order creation datetime, when cast to UTC/GMT, should match the same value stored in the database.'
+		);
 	}
 
 	/**
@@ -1088,6 +1118,75 @@ class OrdersTableDataStoreTests extends WC_Unit_Test_Case {
 	}
 
 	/**
+	 * Test methods get_total_tax_refunded and get_total_shipping_refunded.
+	 */
+	public function test_get_total_tax_refunded_and_get_total_shipping_refunded() {
+		update_option( 'woocommerce_prices_include_tax', 'yes' );
+		update_option( 'woocommerce_calc_taxes', 'yes' );
+
+		$tax_rate = array(
+			'tax_rate_country'  => '',
+			'tax_rate'          => '20',
+			'tax_rate_name'     => 'tax',
+			'tax_rate_order'    => '1',
+			'tax_rate_shipping' => '1',
+		);
+		WC_Tax::_insert_tax_rate( $tax_rate );
+
+		$rate = new WC_Shipping_Rate( 'flat_rate_shipping', 'Flat rate shipping', '10', array(), 'flat_rate' );
+		$item = new WC_Order_Item_Shipping();
+		$item->set_props(
+			array(
+				'method_title' => $rate->label,
+				'method_id'    => $rate->id,
+				'total'        => wc_format_decimal( $rate->cost ),
+				'taxes'        => $rate->taxes,
+			)
+		);
+		foreach ( $rate->get_meta_data() as $key => $value ) {
+			$item->add_meta_data( $key, $value, true );
+		}
+
+		$order = new WC_Order();
+		$this->switch_data_store( $order, $this->sut );
+		$order->save();
+		$order->add_product( WC_Helper_Product::create_simple_product(), 10 );
+		$order->add_item( $item );
+		$order->calculate_totals();
+		$order->save();
+		$this->sut->backfill_post_record( $order );
+
+		assert( $order->get_total_tax() > 0 );
+		assert( $order->get_total() > 0 );
+		$product_item_id  = current( $order->get_items() )->get_id();
+		$shipping_item_id = current( $order->get_items( 'shipping' ) )->get_id();
+		$refund           = wc_create_refund(
+			array(
+				'order_id'   => $order->get_id(),
+				'line_items' => array(
+					$product_item_id  => array(
+						'id'           => $product_item_id,
+						'qty'          => 1,
+						'refund_total' => 10,
+						'refund_tax'   => array( 1 => 2 ),
+					),
+					$shipping_item_id => array(
+						'id'           => $shipping_item_id,
+						'qty'          => 1,
+						'refund_total' => 10,
+						'refund_tax'   => array( 1 => 3 ),
+					),
+				),
+			)
+		);
+		$refund->save();
+		$this->migrator->migrate_order( $refund->get_id() );
+
+		$this->assertEquals( 5, $order->get_data_store()->get_total_tax_refunded( $order ) );
+		$this->assertEquals( 10, $order->get_data_store()->get_total_shipping_refunded( $order ) );
+	}
+
+	/*
 	 * Ensure field_query works as expected.
 	 */
 	public function test_cot_query_field_query(): void {
@@ -1481,5 +1580,4 @@ class OrdersTableDataStoreTests extends WC_Unit_Test_Case {
 			$this->assertEquals( $value, $order->{"get_$prop_name"}(), "Prop $prop_name was not set correctly." );
 		}
 	}
-
 }
