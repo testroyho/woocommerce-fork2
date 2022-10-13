@@ -39,7 +39,7 @@ export const AttributeTermInputField: React.FC<
 	const [ isFetching, setIsFetching ] = useState( false );
 
 	const fetchItems = useCallback(
-		( searchString: string | undefined ) => {
+		( searchString?: string | undefined ) => {
 			setIsFetching( true );
 			return resolveSelect(
 				EXPERIMENTAL_PRODUCT_ATTRIBUTE_TERMS_STORE_NAME
@@ -71,7 +71,7 @@ export const AttributeTermInputField: React.FC<
 			attributeId !== undefined &&
 			! fetchedItems.length
 		) {
-			fetchItems( '' );
+			fetchItems();
 		}
 	}, [ disabled, attributeId ] );
 
