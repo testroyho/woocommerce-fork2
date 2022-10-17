@@ -61,6 +61,7 @@ class OrdersDataStoreServiceProvider extends AbstractServiceProvider {
 			)
 		);
 		$this->share( OrderCacheController::class )->addArguments( array( OrderCache::class, FeaturesController::class ) );
+		$this->share( OrderCache::class );
 		$this->share( CustomOrdersTableController::class )->addArguments(
 			array(
 				OrdersTableDataStore::class,
