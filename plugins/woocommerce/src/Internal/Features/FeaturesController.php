@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Internal\Features;
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Internal\Admin\Analytics;
 use Automattic\WooCommerce\Admin\Features\Navigation\Init;
+use Automattic\WooCommerce\Caches\OrderCacheController;
 use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 use Automattic\WooCommerce\Utilities\ArrayUtil;
@@ -95,7 +96,7 @@ class FeaturesController {
 				'is_experimental'    => false,
 				'enabled_by_default' => true,
 			),
-			'new_navigation'      => array(
+			'new_navigation'                   => array(
 				'name'            => __( 'Navigation', 'woocommerce' ),
 				'description'     => __( 'Adds the new WooCommerce navigation experience to the dashboard', 'woocommerce' ),
 				'is_experimental' => false,
@@ -103,6 +104,11 @@ class FeaturesController {
 			'custom_order_tables' => array(
 				'name'            => __( 'High-Performance order storage (COT)', 'woocommerce' ),
 				'description'     => __( 'Enable the high performance order storage feature.', 'woocommerce' ),
+				'is_experimental' => true,
+			),
+			OrderCacheController::FEATURE_NAME => array(
+				'name'            => __( 'Orders cache', 'woocommerce' ),
+				'description'     => __( 'Enable the usage of a cache for shop orders', 'woocommerce' ),
 				'is_experimental' => true,
 			),
 		);
