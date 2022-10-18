@@ -8,14 +8,19 @@ import {
 	ToggleControl,
 	TextControl,
 } from '@wordpress/components';
+import {
+	CollapsibleContent,
+	Link,
+	useFormContext,
+} from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/settings';
-import { Link, useFormContext } from '@woocommerce/components';
 import { Product } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
+import { AdvancedStockSection } from './advanced-stock-section';
 import { getCheckboxProps, getTextControlProps } from '../utils';
 import { getAdminSetting } from '~/utils/admin-settings';
 import { ProductSectionLayout } from '../../layout/product-section-layout';
@@ -82,6 +87,11 @@ export const ProductInventorySection: React.FC = () => {
 							{ values.manage_stock && <ManageStockSection /> }
 						</>
 					) }
+					<CollapsibleContent
+						toggleText={ __( 'Advanced', 'woocommerce' ) }
+					>
+						<AdvancedStockSection />
+					</CollapsibleContent>
 				</CardBody>
 			</Card>
 		</ProductSectionLayout>
