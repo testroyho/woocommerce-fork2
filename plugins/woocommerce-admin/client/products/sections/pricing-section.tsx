@@ -231,10 +231,7 @@ export const PricingSection: React.FC = () => {
 						<>
 							<DateTimePickerControl
 								label={ __( 'From', 'woocommerce' ) }
-								placeholder={ __(
-									'Sale start date and time',
-									'woocommerce'
-								) }
+								placeholder={ __( 'Now', 'woocommerce' ) }
 								currentDate={ values.date_on_sale_from_gmt }
 								{ ...getProductDateTimePickerControlProps( {
 									...getInputProps( 'date_on_sale_from_gmt' ),
@@ -244,7 +241,7 @@ export const PricingSection: React.FC = () => {
 							<DateTimePickerControl
 								label={ __( 'To', 'woocommerce' ) }
 								placeholder={ __(
-									'Sale end date and time',
+									'No end date',
 									'woocommerce'
 								) }
 								currentDate={ values.date_on_sale_to_gmt }
