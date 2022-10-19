@@ -233,6 +233,7 @@ export const PricingSection: React.FC = () => {
 								label={ __( 'From', 'woocommerce' ) }
 								placeholder={ __( 'Now', 'woocommerce' ) }
 								currentDate={ values.date_on_sale_from_gmt }
+								isDateOnlyPicker={ true }
 								{ ...getProductDateTimePickerControlProps( {
 									...getInputProps( 'date_on_sale_from_gmt' ),
 								} ) }
@@ -245,6 +246,7 @@ export const PricingSection: React.FC = () => {
 									'woocommerce'
 								) }
 								currentDate={ values.date_on_sale_to_gmt }
+								isDateOnlyPicker={ true }
 								{ ...getProductDateTimePickerControlProps( {
 									...getInputProps( 'date_on_sale_to_gmt' ),
 								} ) }
