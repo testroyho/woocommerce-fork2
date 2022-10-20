@@ -184,7 +184,7 @@ export const AddAttributeModal: React.FC< CreateCategoryModalProps > = ( {
 																	);
 																}
 															} }
-															filteredAttributeIds={ [
+															ignoredAttributeIds={ [
 																...selectedAttributeIds,
 																...values.attributes
 																	.map(
