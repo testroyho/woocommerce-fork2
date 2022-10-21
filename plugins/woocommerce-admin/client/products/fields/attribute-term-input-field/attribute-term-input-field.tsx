@@ -28,11 +28,19 @@ type AttributeTermInputFieldProps = {
 	attributeId?: number;
 	placeholder?: string;
 	disabled?: boolean;
+	label?: string;
 };
 
 export const AttributeTermInputField: React.FC<
 	AttributeTermInputFieldProps
-> = ( { value = [], onChange, placeholder, disabled, attributeId } ) => {
+> = ( {
+	value = [],
+	onChange,
+	placeholder,
+	disabled,
+	attributeId,
+	label = '',
+} ) => {
 	const [ fetchedItems, setFetchedItems ] = useState<
 		ProductAttributeTerm[]
 	>( [] );
@@ -95,7 +103,7 @@ export const AttributeTermInputField: React.FC<
 			items={ fetchedItems }
 			multiple
 			disabled={ disabled || ! attributeId }
-			label=""
+			label={ label }
 			getFilteredItems={ ( allItems ) => allItems }
 			onInputChange={ debouncedSearch }
 			placeholder={ placeholder || '' }
