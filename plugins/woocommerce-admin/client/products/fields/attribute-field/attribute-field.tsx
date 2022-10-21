@@ -8,6 +8,7 @@ import { ProductAttribute } from '@woocommerce/data';
 import { Text } from '@woocommerce/experimental';
 import { Sortable, ListItem } from '@woocommerce/components';
 import { closeSmall } from '@wordpress/icons';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -29,6 +30,7 @@ export const AttributeField: React.FC< AttributeFieldProps > = ( {
 	const [ showAddAttributeModal, setShowAddAttributeModal ] =
 		useState( false );
 	const onRemove = ( attribute: ProductAttribute ) => {
+		recordEvent( 'product_remove_attribute_button' );
 		// eslint-disable-next-line no-alert
 		if ( window.confirm( __( 'Remove this attribute?', 'woocommerce' ) ) ) {
 			onChange( value.filter( ( attr ) => attr.id !== attribute.id ) );
@@ -167,7 +169,10 @@ export const AttributeField: React.FC< AttributeFieldProps > = ( {
 				<Button
 					variant="secondary"
 					className="woocommerce-attribute-field__add-attribute"
-					onClick={ () => setShowAddAttributeModal( true ) }
+					onClick={ () => {
+						recordEvent( 'product_add_attribute_button' );
+						setShowAddAttributeModal( true );
+					} }
 				>
 					{ __( 'Add attribute', 'woocommerce' ) }
 				</Button>
