@@ -6,6 +6,7 @@ import { useState } from '@wordpress/element';
 import { trash } from '@wordpress/icons';
 import { ProductAttribute, ProductAttributeTerm } from '@woocommerce/data';
 import { Form } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
 import {
 	Button,
 	Modal,
@@ -81,6 +82,7 @@ export const AddAttributeModal: React.FC< CreateCategoryModalProps > = ( {
 			value: AttributeForm[ keyof AttributeForm ]
 		) => void
 	) => {
+		recordEvent( 'product_remove_attribute_button' );
 		if ( values.attributes.length > 1 ) {
 			setValue(
 				'attributes',
@@ -270,9 +272,12 @@ export const AddAttributeModal: React.FC< CreateCategoryModalProps > = ( {
 										'Add another attribute',
 										'woocommerce'
 									) }
-									onClick={ () =>
-										addAnother( values, setValue )
-									}
+									onClick={ () => {
+										recordEvent(
+											'product_add_another_attribute_button'
+										);
+										addAnother( values, setValue );
+									} }
 								>
 									+&nbsp;
 									{ __( 'Add another', 'woocommerce' ) }
