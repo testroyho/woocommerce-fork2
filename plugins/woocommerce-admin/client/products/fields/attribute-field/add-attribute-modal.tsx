@@ -21,7 +21,7 @@ import { AttributeInputField } from '../attribute-input-field';
 import { AttributeTermInputField } from '../attribute-term-input-field';
 import { HydratedAttributeType } from '../attribute-field';
 
-type CreateCategoryModalProps = {
+type AddAttributeModalProps = {
 	onCancel: () => void;
 	onAdd: ( newCategories: HydratedAttributeType[] ) => void;
 	selectedAttributeIds?: number[];
@@ -31,7 +31,7 @@ type AttributeForm = {
 	attributes: Partial< HydratedAttributeType >[];
 };
 
-export const AddAttributeModal: React.FC< CreateCategoryModalProps > = ( {
+export const AddAttributeModal: React.FC< AddAttributeModalProps > = ( {
 	onCancel,
 	onAdd,
 	selectedAttributeIds = [],
