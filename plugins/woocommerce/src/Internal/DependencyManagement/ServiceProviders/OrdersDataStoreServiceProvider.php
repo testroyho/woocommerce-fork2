@@ -20,6 +20,7 @@ use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
 use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStoreMeta;
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
 use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
+use Automattic\WooCommerce\Proxies\LegacyProxy;
 
 /**
  * Service provider for the classes in the Internal\DataStores\Orders namespace.
@@ -48,7 +49,7 @@ class OrdersDataStoreServiceProvider extends AbstractServiceProvider {
 	public function register() {
 		$this->share( OrdersTableDataStoreMeta::class );
 
-		$this->share( OrdersTableDataStore::class )->addArguments( array( OrdersTableDataStoreMeta::class, DatabaseUtil::class ) );
+		$this->share( OrdersTableDataStore::class )->addArguments( array( OrdersTableDataStoreMeta::class, DatabaseUtil::class, LegacyProxy::class ) );
 		$this->share( DataSynchronizer::class )->addArguments(
 			array(
 				OrdersTableDataStore::class,
@@ -56,10 +57,11 @@ class OrdersDataStoreServiceProvider extends AbstractServiceProvider {
 				PostsToOrdersMigrationController::class,
 				OrderCache::class,
 				OrderCacheController::class,
+				LegacyProxy::class
 			)
 		);
-		$this->share( OrdersTableRefundDataStore::class )->addArguments( array( OrdersTableDataStoreMeta::class, DatabaseUtil::class ) );
-		$this->share( OrderCache::class )->addArgument( TransientsEngine::class );
+		$this->share( OrdersTableRefundDataStore::class )->addArguments( array( OrdersTableDataStoreMeta::class, DatabaseUtil::class, LegacyProxy::class ) );
+		$this->share( OrderCache::class );
 		$this->share( OrderCacheController::class )->addArguments( array( OrderCache::class, FeaturesController::class ) );
 		$this->share( CustomOrdersTableController::class )->addArguments(
 			array(
@@ -72,6 +74,7 @@ class OrdersDataStoreServiceProvider extends AbstractServiceProvider {
 				OrderCacheController::class,
 			)
 		);
+
 		if ( Constants::is_defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->share( CLIRunner::class )->addArguments( array( CustomOrdersTableController::class, DataSynchronizer::class, PostsToOrdersMigrationController::class ) );
 		}

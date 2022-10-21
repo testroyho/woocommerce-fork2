@@ -6,6 +6,7 @@ import { Schema } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
+import { ProductCategory } from '../product-categories/types';
 import { BaseQueryParams } from '../types';
 
 export type ProductType = 'simple' | 'grouped' | 'external' | 'variable';
@@ -34,6 +35,12 @@ export type ProductAttribute = {
 	options: string[];
 };
 
+export type ProductDimensions = {
+	width: string;
+	height: string;
+	length: string;
+};
+
 export type Product< Status = ProductStatus, Type = ProductType > = Omit<
 	Schema.Post,
 	'status' | 'categories'
@@ -52,9 +59,7 @@ export type Product< Status = ProductStatus, Type = ProductType > = Omit<
 	description: string;
 	short_description: string;
 	sku: string;
-	date_on_sale_from: string | null;
 	date_on_sale_from_gmt: string | null;
-	date_on_sale_to: string | null;
 	date_on_sale_to_gmt: string | null;
 	virtual: boolean;
 	downloadable: boolean;
@@ -89,7 +94,7 @@ export type Product< Status = ProductStatus, Type = ProductType > = Omit<
 	attributes: ProductAttribute[];
 	dimensions: ProductDimensions;
 	weight: string;
-	categories: ProductCategory[];
+	categories: Pick< ProductCategory, 'id' | 'name' | 'slug' >[];
 };
 
 export const productReadOnlyProperties = [
@@ -147,16 +152,4 @@ export type ProductQuery<
 	min_price: string;
 	max_price: string;
 	stock_status: 'instock' | 'outofstock' | 'onbackorder';
-};
-
-export type ProductDimensions = {
-	width: string;
-	height: string;
-	length: string;
-};
-
-export type ProductCategory = {
-	id: number;
-	name: string;
-	slug: string;
 };
