@@ -46,10 +46,7 @@ export const Menu = ( {
 	return (
 		<div
 			ref={ selectControlMenuRef }
-			className={ classnames(
-				'woocommerce-experimental-select-control__menu',
-				className
-			) }
+			className="woocommerce-experimental-select-control__menu"
 		>
 			<Popover
 				focusOnMount={ false }
@@ -65,7 +62,10 @@ export const Menu = ( {
 			>
 				<ul
 					{ ...getMenuProps() }
-					className="woocommerce-experimental-select-control__popover-menu-container"
+					className={ classnames(
+						'woocommerce-experimental-select-control__popover-menu-container',
+						className
+					) }
 					style={ {
 						width: boundingRect?.width,
 					} }
