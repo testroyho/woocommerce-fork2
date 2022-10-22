@@ -37,6 +37,7 @@ export type DateTimePickerControlProps = {
 	disabled?: boolean;
 	isDateOnlyPicker?: boolean;
 	is12HourPicker?: boolean;
+	forceTimeTo?: 'start-of-day' | 'end-of-day';
 	onChange?: DateTimePickerControlOnChangeHandler;
 	onBlur?: () => void;
 	label?: string;
@@ -49,6 +50,7 @@ export const DateTimePickerControl: React.FC< DateTimePickerControlProps > = ( {
 	currentDate,
 	isDateOnlyPicker = false,
 	is12HourPicker = true,
+	forceTimeTo,
 	dateTimeFormat,
 	disabled = false,
 	onChange,
@@ -116,6 +118,18 @@ export const DateTimePickerControl: React.FC< DateTimePickerControlProps > = ( {
 		return momentDate.local().format( displayFormat );
 	}
 
+	function maybeForceTime( momentDate: Moment ): Moment {
+		const updatedMomentDate = momentDate.clone();
+
+		if ( forceTimeTo === 'start-of-day' ) {
+			updatedMomentDate.startOf( 'day' );
+		} else if ( forceTimeTo === 'end-of-day' ) {
+			updatedMomentDate.endOf( 'day' );
+		}
+
+		return updatedMomentDate;
+	}
+
 	function hasFocusLeftInputAndDropdownContent(
 		event: React.FocusEvent< HTMLInputElement >
 	): boolean {
@@ -166,10 +180,11 @@ export const DateTimePickerControl: React.FC< DateTimePickerControlProps > = ( {
 	>( ( newInputString: string, fireOnChange: boolean ) => {
 		if ( ! isMounted.current ) return;
 
-		const newDateTime = parseMoment( newInputString );
+		let newDateTime = parseMoment( newInputString );
 		const isValid = newDateTime.isValid();
 
 		if ( isValid ) {
+			newDateTime = maybeForceTime( newDateTime );
 			setLastValidDate( newDateTime );
 		}
 
