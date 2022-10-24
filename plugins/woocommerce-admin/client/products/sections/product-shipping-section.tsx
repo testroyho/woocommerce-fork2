@@ -361,7 +361,12 @@ export function ProductShippingSection( {
 							return value;
 						} )
 					}
-					onCancel={ () => setShowShippingClassModal( false ) }
+					onCancel={ () => {
+						recordEvent(
+							'product_modal_new_shipping_class_cancel_button'
+						);
+						setShowShippingClassModal( false );
+					} }
 				/>
 			) }
 		</ProductSectionLayout>
