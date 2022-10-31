@@ -216,7 +216,7 @@ jobs:
                 if ( changelogEntry === false ) {
                   continue;
                 }
-
+                console.log( 'check changelog', changelogEntry );
                 fs.readFile( './plugins/woocommerce/readme.txt', 'utf-8', function( err, data ) {
                   if ( err ) {
                     console.error( err );
