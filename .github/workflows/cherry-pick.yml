@@ -212,8 +212,8 @@ jobs:
                     changelogEntry = false;
                   }
                 } );
-
-                if ( changelogEntry === false || changelogEntry === '' ) {
+                console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
+                if ( changelogEntry === false ) {
                   continue;
                 }
 
