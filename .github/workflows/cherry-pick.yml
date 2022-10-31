@@ -181,7 +181,7 @@ jobs:
                 let changelogEntry     = '';
                 let changelogEntryType = '';
 
-                fs.readFile( './' + file.filename, 'utf-8', function( err, data ) {
+                fs.readFileSync( './' + file.filename, 'utf-8', function( err, data ) {
                   if ( err ) {
                     console.error( err );
                   }
@@ -211,19 +211,17 @@ jobs:
                   if ( changelogEntry.match( /comment:/i ) ) {
                     changelogEntry = false;
                   }
-
-                  console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
                 } );
                 
-                if ( changelogEntry === false ) {
+                if ( ! changelogEntry ) {
                   continue;
                 }
 
-                fs.readFile( './plugins/woocommerce/readme.txt', 'utf-8', function( err, data ) {
+                fs.readFileSync( './plugins/woocommerce/readme.txt', 'utf-8', function( err, data ) {
                   if ( err ) {
                     console.error( err );
                   }
-                  console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
+
                   changelogTxt = data.split( "\n" );
                   let isInRange = false;
                   let newChangelogTxt = [];
