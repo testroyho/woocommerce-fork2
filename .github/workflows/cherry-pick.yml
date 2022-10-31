@@ -213,7 +213,7 @@ jobs:
                   }
                 } );
 
-                if ( ! changelogEntry ) {
+                if ( changelogEntry === false || changelogEntry === '' ) {
                   continue;
                 }
 
