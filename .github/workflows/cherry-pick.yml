@@ -213,11 +213,10 @@ jobs:
                   }
                 } );
 
-                if ( changelogEntry === false ) {
+                if ( ! changelogEntry ) {
                   continue;
                 }
-                console.log( 'check changelog', changelogEntry );
-                console.log( 'changelog type', typeof changelogEntry );
+
                 fs.readFile( './plugins/woocommerce/readme.txt', 'utf-8', function( err, data ) {
                   if ( err ) {
                     console.error( err );
