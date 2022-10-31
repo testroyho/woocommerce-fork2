@@ -212,8 +212,8 @@ jobs:
                     changelogEntry = false;
                   }
 
-                  if ( ! changelogEntry ) {console.log( 'continuing' );
-                    continue;
+                  if ( ! changelogEntry ) {console.log( 'returning' );
+                    return;
                   }
 
                   fs.readFile( './plugins/woocommerce/readme.txt', 'utf-8', function( err, data ) {
