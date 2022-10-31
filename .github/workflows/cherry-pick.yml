@@ -223,7 +223,7 @@ jobs:
                   if ( err ) {
                     console.error( err );
                   }
-
+                  console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
                   changelogTxt = data.split( "\n" );
                   let isInRange = false;
                   let newChangelogTxt = [];
