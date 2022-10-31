@@ -180,7 +180,7 @@ jobs:
 
                 let changelogEntry     = '';
                 let changelogEntryType = '';
-
+                console.log( 'changelogentry0', changelogEntry );console.log( 'changelogentry0 type', typeof changelogEntry );
                 fs.readFileSync( './' + file.filename, 'utf-8', function( err, data ) {
                   if ( err ) {
                     console.error( err );
@@ -210,10 +210,10 @@ jobs:
 
                   if ( changelogEntry.match( /comment:/i ) ) {
                     changelogEntry = false;
-                  }
+                  }console.log( 'changelogentry1', changelogEntry );console.log( 'changelogentry1 type', typeof changelogEntry );
                 } );
                 
-                if ( ! changelogEntry ) {
+                if ( ! changelogEntry ) {console.log( 'continuing' );
                   continue;
                 }
 
@@ -221,7 +221,7 @@ jobs:
                   if ( err ) {
                     console.error( err );
                   }
-
+                  console.log( 'changelogentry2', changelogEntry );console.log( 'changelogentry2 type', typeof changelogEntry );
                   changelogTxt = data.split( "\n" );
                   let isInRange = false;
                   let newChangelogTxt = [];
