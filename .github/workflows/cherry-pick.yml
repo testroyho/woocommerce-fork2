@@ -211,11 +211,9 @@ jobs:
                   if ( changelogEntry.match( /comment:/i ) ) {
                     changelogEntry = false;
                   }
-
-                  console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
                 } );
                 
-                if ( changelogEntry === false ) {
+                if ( ! changelogEntry ) {
                   continue;
                 }
 
@@ -223,7 +221,7 @@ jobs:
                   if ( err ) {
                     console.error( err );
                   }
-                  console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
+
                   changelogTxt = data.split( "\n" );
                   let isInRange = false;
                   let newChangelogTxt = [];
