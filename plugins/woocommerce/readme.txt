@@ -188,6 +188,7 @@ WooCommerce comes with some sample data you can use to see how products look; im
 * Fix - Support Cart/Checkout/My accounts/Terms settings in WC REST API [#34234](https://github.com/woocommerce/woocommerce/pull/34234)
 * Fix - Use the default paymetn suggestions when woocommerce_show_marketplace_suggestions is set to no [#34083](https://github.com/woocommerce/woocommerce/pull/34083)
 * Fix - Wrap default payment gateway strings in __() function call [#33987](https://github.com/woocommerce/woocommerce/pull/33987)
+* Add - Add new Category dropdown field to the new Product Management screen. [#31](https://github.com/woocommerce/woocommerce/pull/31)
 * Add - Add default styles for block themes to ensure WooCommerce looks better out of the box with block themes that are not optimized for WooCommerce specifically. [#33518](https://github.com/woocommerce/woocommerce/pull/33518)
 * Add - Added tour for store location [#34137](https://github.com/woocommerce/woocommerce/pull/34137)
 * Add - Add framework to run managed batch operations. [#33233](https://github.com/woocommerce/woocommerce/pull/33233)
