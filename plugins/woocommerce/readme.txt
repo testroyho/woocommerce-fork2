@@ -167,6 +167,7 @@ WooCommerce comes with some sample data you can use to see how products look; im
 
 **WooCommerce**
 
+* Fix - false [#34](https://github.com/woocommerce/woocommerce/pull/34)
 * Fix - Address compatibility between custom order tables and REST API /orders endpoints. [#34178](https://github.com/woocommerce/woocommerce/pull/34178)
 * Fix - Add type safety while getting product price [#33926](https://github.com/woocommerce/woocommerce/pull/33926)
 * Fix - Ensure changes to product order are reflected even when advanced post caching is in effect. [#34195](https://github.com/woocommerce/woocommerce/pull/34195)
