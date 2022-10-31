@@ -167,35 +167,6 @@ WooCommerce comes with some sample data you can use to see how products look; im
 
 **WooCommerce**
 
-* Dev - Update WooCommerce Blocks to 8.3.3. [#34814](https://github.com/woocommerce/woocommerce/pull/34814)
-
-**WooCommerce Blocks 8.3.3**
-
-* Fix - Ensure that scripts are loaded using absolute URLs to prevent loading issues with subfolder installs. ([7211](https://github.com/woocommerce/woocommerce-blocks/pull/7211))
-
-= 6.9.3 2022-09-20 =
-
-**WooCommerce**
-
-* Fix - Remove typecasting to prevent fatal when $screen_id is null. [#34734](https://github.com/woocommerce/woocommerce/pull/34734)
-* Fix - Only show the product image upload tip once, and on all product edit pages. [#34739](https://github.com/woocommerce/woocommerce/pull/34739)
-
-= 6.9.2 2022-09-15 =
-
-**WooCommerce**
-
-* Fix - Use offsetted datetime when displaying order created date. [#34687](https://github.com/woocommerce/woocommerce/pull/34687)
-
-= 6.9.1 2022-09-14 =
-
-**WooCommerce**
-
-* Fix - Fix error when 'woocommerce_enqueue_styles' returns non-array. [#34671](https://github.com/woocommerce/woocommerce/pull/34671)
-
-= 6.9.0 2022-09-13 =
-
-**WooCommerce**
-
 * Fix - Address compatibility between custom order tables and REST API /orders endpoints. [#34178](https://github.com/woocommerce/woocommerce/pull/34178)
 * Fix - Add type safety while getting product price [#33926](https://github.com/woocommerce/woocommerce/pull/33926)
 * Fix - Ensure changes to product order are reflected even when advanced post caching is in effect. [#34195](https://github.com/woocommerce/woocommerce/pull/34195)
