@@ -211,8 +211,10 @@ jobs:
                   if ( changelogEntry.match( /comment:/i ) ) {
                     changelogEntry = false;
                   }
+
+                  console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
                 } );
-                console.log( 'changelogentry', changelogEntry );console.log( 'type of changelogentry', typeof changelogEntry );
+                
                 if ( changelogEntry === false ) {
                   continue;
                 }
