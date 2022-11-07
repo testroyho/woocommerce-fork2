@@ -26,5 +26,5 @@ jobs:
               with:
                 script: |
                   if ( '${{ steps.run.outputs.templates }}' ) {
-                    core.setFailed( 'Templates have changed but template versions were not bumped:\n\n${{ steps.run.outputs.templates }}' );
+                    core.setFailed( 'Templates have changed but template versions were not bumped:\n${{ steps.run.outputs.templates }}' );
                   }
