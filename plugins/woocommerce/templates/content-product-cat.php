@@ -12,7 +12,7 @@
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 4.7.0
+ * @version 7.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 *
 	 * @hooked woocommerce_template_loop_category_link_open - 10
 	 */
-	do_action( 'woocommerce_before_subcategory', $category );
+	do_action( 'woocommerce_before_subcategorys', $category );
 
 	/**
 	 * The woocommerce_before_subcategory_title hook.
