@@ -25,9 +25,26 @@ jobs:
               uses: actions/github-script@v6
               with:
                 script: |
-                  const templateArr = '${{ steps.run.outputs.templates }}'.split( '\n' );
+                  const template = '${{ steps.run.outputs.templates }}';
 
-                  console.log( 'template arr', templateArr );
-                  if ( '${{ steps.run.outputs.templates }}' ) {
-                    core.setFailed( 'Templates have changed but template versions were not bumped:\n${{ steps.run.outputs.templates }}' );
+                  if ( template === '' ) {
+                    return;
+                  }
+
+                  const templateArr = template.split( '\n' );
+                  const modTemplateArr = [];
+
+                  templateArr.forEach( ( el ) => {
+                    if ( el.match( /NOTICE/ ) ) {
+                      modTemplateArr.pop();
+                      return;
+                    }
+
+                    modTemplateArr.push( el );
+                  } );
+
+                  const templateResult = modTemplateArr.join( '\n' );
+
+                  if ( templateResult ) {
+                    core.setFailed( `Templates have changed but template versions were not bumped:\n${ templateResult }` );
                   }
