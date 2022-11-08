@@ -11,7 +11,7 @@
  * Requires at least: 5.8
  * Requires PHP: 7.2
  *
- * @package WooCommerce
+ * @package WooCommerce.
  */
 
 defined( 'ABSPATH' ) || exit;
