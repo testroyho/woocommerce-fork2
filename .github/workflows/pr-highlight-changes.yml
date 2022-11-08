@@ -25,6 +25,9 @@ jobs:
               uses: actions/github-script@v6
               with:
                 script: |
+                  const templateArr = '${{ steps.run.outputs.templates }}'.split( '\n' );
+
+                  console.log( 'template arr', templateArr );
                   if ( '${{ steps.run.outputs.templates }}' ) {
                     core.setFailed( 'Templates have changed but template versions were not bumped:\n${{ steps.run.outputs.templates }}' );
                   }
