@@ -2,6 +2,9 @@ name: Build release asset
 on: 
   release:
     types: [published]
+
+permissions: {}
+
 jobs:
   build:
     name: Build release asset
@@ -30,7 +33,7 @@ jobs:
 
 
   update-code-reference:
-    if: github.event.release.prerelease == false && github.event.release.draft == false && github.repository_owner == 'woocommerce'
+    if: github.event.release.prerelease == false && github.event.release.draft == false && github.repository_owner == 'roykho'
     name: Update Code Reference
     needs: build
     runs-on: ubuntu-20.04
@@ -39,7 +42,7 @@ jobs:
         uses: aurelien-baudet/workflow-dispatch@v2
         with:
           workflow: GitHub Pages deploy
-          repo: woocommerce/code-reference
+          repo: roykho/code-reference-fork
           token: ${{ secrets.CUSTOM_GH_TOKEN }}
           ref: refs/heads/trunk
           inputs: '{ "version": "${{ github.event.release.tag_name }}" }'    
