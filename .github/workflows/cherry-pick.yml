@@ -255,11 +255,11 @@ jobs:
                         }
                       }
 
-                      core.setOutput( 'changelogsToBeDeleted', changelogsToBeDeleted )
+                      core.setOutput( 'changelogsToBeDeleted', changelogsToBeDeleted.join( ' ' ) )
 
             - name: Delete changelog files from cherry pick branch
               if: ${{ steps.changelog.outputs.changelogsToBeDeleted }}.length > 0
-              run: git rm ${{ join( steps.changelog.outputs.changelogsToBeDeleted, ' ' ) }}
+              run: git rm ${{ steps.changelog.outputs.changelogsToBeDeleted }}
 
             - name: Commit changes for cherry pick
               if: ${{ steps.changelog.outputs.changelogsToBeDeleted }}.length > 0
@@ -298,7 +298,7 @@ jobs:
 
             - name: Delete changelogs from trunk
               if: ${{ steps.changelog.outputs.changelogsToBeDeleted }}.length > 0
-              run: git rm ${{ join( steps.changelog.outputs.changelogsToBeDeleted, ' ' ) }}
+              run: git rm ${{ steps.changelog.outputs.changelogsToBeDeleted }}
 
             - name: Commit changes for deletion
               if: ${{ steps.changelog.outputs.changelogsToBeDeleted }}.length > 0
