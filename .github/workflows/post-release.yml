@@ -16,7 +16,7 @@ jobs:
         name: Update changelog and version
         runs-on: ubuntu-20.04
         permissions:
-          contents: read
+          contents: write
         steps:
             - uses: actions/checkout@v3
 
