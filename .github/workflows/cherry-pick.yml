@@ -125,8 +125,6 @@ jobs:
         name: Run cherry pick tool
         runs-on: ubuntu-20.04
         permissions:
-          actions: write
-          contents: write
           pull-requests: write
         needs: [prep, check-release-branch-exists]
         if: success()
