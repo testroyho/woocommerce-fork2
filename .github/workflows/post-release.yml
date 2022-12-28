@@ -107,7 +107,7 @@ jobs:
 
             - name: Push branch up
               if: steps.update-entries.outputs.continue == 'true'
-              run: git push origin prep/post-release-tasks-${{ github.event.release.tag_name }}
+              run: git push origin prep/post-release-tasks-${{ github.event.release.tag_name }} --force
 
             - name: Create the PR
               if: steps.update-entries.outputs.continue == 'true'
