@@ -10,7 +10,7 @@ jobs:
     name: Build release asset
     runs-on: ubuntu-20.04
     permissions:
-      contents: read|write
+      contents: write
     steps:
       - uses: actions/checkout@v3
       
