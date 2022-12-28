@@ -2,10 +2,15 @@ name: Build release asset
 on: 
   release:
     types: [published]
+
+permissions: {}
+
 jobs:
   build:
     name: Build release asset
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read|write
     steps:
       - uses: actions/checkout@v3
       
@@ -30,7 +35,7 @@ jobs:
 
 
   update-code-reference:
-    if: github.event.release.prerelease == false && github.event.release.draft == false && github.repository_owner == 'woocommerce'
+    if: github.event.release.prerelease == false && github.event.release.draft == false && github.repository_owner == 'roykho'
     name: Update Code Reference
     needs: build
     runs-on: ubuntu-20.04
