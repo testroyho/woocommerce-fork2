@@ -29,10 +29,10 @@ $release_day_of_week  = date( 'l', $release_time );
 $release_day_of_month = (int) date( 'j', $release_time );
 
 // If 22 days from now isn't the second Tuesday, then it's not code freeze day.
-if ( 'Tuesday' !== $release_day_of_week || $release_day_of_month < 8 || $release_day_of_month > 14 ) {
-	echo 'Info: Today is not the Monday of the code freeze.' . PHP_EOL;
-	exit( 1 );
-}
+// if ( 'Tuesday' !== $release_day_of_week || $release_day_of_month < 8 || $release_day_of_month > 14 ) {
+// 	echo 'Info: Today is not the Monday of the code freeze.' . PHP_EOL;
+// 	exit( 1 );
+// }
 
 $latest_version_with_release = get_latest_version_with_release();
 
@@ -52,7 +52,7 @@ $milestone_to_create      = "{$milestone_major_minor}.0";
 
 if ( getenv( 'GITHUB_OUTPUTS' ) ) {
 	echo 'Including GitHub Outputs...' . PHP_EOL;
-	
+
 	set_output( 'next_version', $milestone_major_minor );
 	set_output( 'release_version', $branch_major_minor );
 	set_output( 'branch', $release_branch_to_create );
