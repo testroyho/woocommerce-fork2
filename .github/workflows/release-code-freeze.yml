@@ -58,7 +58,6 @@ jobs:
         name: 'Maybe create next milestone and release branch'
         runs-on: ubuntu-20.04
         needs: verify-code-freeze
-        if: needs.verify-code-freeze.outputs.freeze == 0
         outputs:
             branch: ${{ steps.freeze.outputs.branch }}
             release_version: ${{ steps.freeze.outputs.release_version }}
